@@ -107,6 +107,8 @@ namespace Matteprogrammering {
 		}
 
 		public Window Zoom(float factor, PointF origin, bool zoomOut) {
+			//Inspired by the Google Maps zoom
+
 			/* Development version
 			Matrix matrix = new Matrix();
 			//Center origin
@@ -122,7 +124,8 @@ namespace Matteprogrammering {
 				factor, 0,
 				0, factor,
 				origin.X - origin.X * factor,
-				origin.Y - origin.Y * factor);
+				origin.Y - origin.Y * factor
+			);
 			//*/
 
 			//Invert matrix to zoom out
