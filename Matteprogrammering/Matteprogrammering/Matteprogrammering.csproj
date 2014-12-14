@@ -44,11 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assignment9.cs">
+    <Compile Include="Function\CombinedFunction.cs" />
+    <Compile Include="Function\Exponential.cs" />
+    <Compile Include="GraphViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Assignment9.Designer.cs">
-      <DependentUpon>Assignment9.cs</DependentUpon>
+    <Compile Include="GraphViewer.Designer.cs">
+      <DependentUpon>GraphViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Extentions\MatrixExtensions.cs" />
     <Compile Include="Extentions\PointExtentions.cs" />
@@ -60,6 +62,14 @@
     </Compile>
     <Compile Include="Function\Function.cs" />
     <Compile Include="Function\Polynomial.cs" />
+    <Compile Include="Graph\BaseGraph.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Graph\BaseGraph.Designer.cs">
+      <DependentUpon>BaseGraph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Graph\DisplayMode.cs" />
+    <Compile Include="Graph\DrawMode.cs" />
     <Compile Include="Graph\Graph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -75,14 +85,26 @@
     <Compile Include="Graph\Window.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Assignment9.resx">
-      <DependentUpon>Assignment9.cs</DependentUpon>
+    <Compile Include="UI\FunctionPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\FunctionPicker.Designer.cs">
+      <DependentUpon>FunctionPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\WindowPicker.Designer.cs">
+      <DependentUpon>WindowPicker.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GraphViewer.resx">
+      <DependentUpon>GraphViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Graph\Graph.resx">
-      <DependentUpon>Graph.cs</DependentUpon>
+    <EmbeddedResource Include="Graph\BaseGraph.resx">
+      <DependentUpon>BaseGraph.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Graph\InteractiveGraph.resx">
       <DependentUpon>InteractiveGraph.cs</DependentUpon>
@@ -96,6 +118,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\FunctionPicker.resx">
+      <DependentUpon>FunctionPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\WindowPicker.resx">
+      <DependentUpon>WindowPicker.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

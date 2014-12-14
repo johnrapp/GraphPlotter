@@ -21,5 +21,13 @@ namespace Matteprogrammering.Extentions
 		public static PointF Scale(this PointF a, float s) {
 			return new PointF(a.X * s, a.Y * s);
 		}
+
+		public static String Render(this PointF a) {
+			return String.Format("({0}, {1})", a.X, a.Y);
+		}
+
+		public static String Render(this PointF a, int d) {
+			return String.Format("({0}, {1})", Math.Round(a.X, d), Math.Round(a.Y, d));
+		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Matteprogrammering
 		{
 			InitializeComponent();
 			Assignments = new Form[] {
-				new Assignment9()
+				new GraphViewer()
 			};
 		}
 

@@ -12,14 +12,15 @@ using Matteprogrammering.Extentions;
 
 namespace Matteprogrammering {
 	public partial class InteractiveGraph : Graph {
+		public DisplayMode DisplayMode;
+
 		public EventHandler OnWindowChanged;
-		public Matrix CachedInverse;
+
+
 		public InteractiveGraph() {
 			InitializeComponent();
 
 			MouseCoords.Hide();
-
-			CachedInverse = Inverse;
 		}
 
 		public override Window Window {
@@ -43,23 +44,35 @@ namespace Matteprogrammering {
 
 		private PointF LastPos;
 		private void OnMouseMove(object sender, MouseEventArgs e) {
-			PointF location = e.Location;
+			PointF location = Inverse.TransformPoint(e.Location);
 			if(e.Button == MouseButtons.Left) {
 				if(LastPos != null) {
-					PointF delta = LastPos.Subtract(location);
+					PointF delta = LastPos.Subtract(e.Location);
 
 					Window += Inverse.TransformVector(delta);
 				}
 			} else {
-				DisplayMouseCoords(location);
+				Display(location);
 			}
 
-			LastPos = location;
+			UserX = location.X;
+
+			LastPos = e.Location;
 		}
 
-		private void DisplayMouseCoords(PointF mousePos) {
-			mousePos = Inverse.TransformPoint(mousePos);
-			MouseCoords.Text = "(" + Math.Round(mousePos.X, 1) + ", " + Math.Round(mousePos.Y, 1) + ")";
+		private void Display(PointF pos) {
+			PointF output = pos;
+			//Pos is already mouse pos
+			switch(DisplayMode) {
+				case DisplayMode.Function:
+					output = new PointF(pos.X, (float) Function.Value(pos.X));
+					break;
+				case DisplayMode.Derivate:
+					output = new PointF(pos.X, (float) Function.Derivate(pos.X));
+					break;
+			}
+
+			MouseCoords.Text = output.Render(1);
 		}
 
 		private void OnMouseWheel(object sender, MouseEventArgs e) {
@@ -69,7 +82,7 @@ namespace Matteprogrammering {
 
 			Window = Window.Zoom(0.5f, pos, e.Delta < 0);
 
-			DisplayMouseCoords(e.Location);
+			Display(e.Location);
 		}
 
 	}
