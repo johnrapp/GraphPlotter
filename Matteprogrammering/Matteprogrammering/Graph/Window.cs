@@ -9,11 +9,23 @@ using Matteprogrammering.Extentions;
 
 namespace Matteprogrammering {
 	public class Window {
-		public static readonly int MIN_X = 0;
-		public static readonly int MAX_X = 1;
-		public static readonly int MIN_Y = 2;
-		public static readonly int MAX_Y = 3;
-		public static Window DEFAULT = new Window(-10, 10, -10, 10);
+		//Class that that enables a min and max value for x and y to be selected when rendering graphswindow
+
+		//Min and max values for x and y.
+		//It makes sense to have a limit, since otherwise you could zoom in or out until the float will overflow
+		private const float MAX_WIDTH  = 1000000;
+		private const float MAX_HEIGHT = 1000000;
+		private const float MIN_WIDTH  = 0.05f;
+		private const float MIN_HEIGHT = 0.05f;
+
+		//Indices for bounds array (The numbers are not important)
+		public const int MIN_X = 0;
+		public const int MAX_X = 1;
+		public const int MIN_Y = 2;
+		public const int MAX_Y = 3;
+
+		//The default window
+		public static readonly Window DEFAULT = new Window(-10, 10, -10, 10);
 
 		public readonly PointF Min, Max;
 
@@ -27,17 +39,20 @@ namespace Matteprogrammering {
 		public Window(float[] bounds) : this(new PointF(bounds[MIN_X], bounds[MIN_Y]), new PointF(bounds[MAX_X], bounds[MAX_Y])) {
 		}
 
-		/*
-		public PointF Center {
-			get {
-				//Average of min and max
-				return Min.Add(Max).Scale(0.5f);
-			}
+		public float Width {
+			get { return Max.X - Min.X; }
 		}
-		*/
+		public float Height {
+			get { return Max.Y - Min.Y; }
+		}
 
 		public Boolean Validate() {
-			return Min.X < Max.X && Min.Y < Max.Y;
+			float width = Width, height = Height;
+			//Make sure max is bigger than min
+			return width > 0 && height > 0
+				//Keep within min and max width and height
+				&& width < MAX_WIDTH && height < MAX_HEIGHT
+				&& width > MIN_WIDTH && height > MIN_HEIGHT;
 		}
 		public float[] Bounds() {
 			float[] bounds = new float[4];
@@ -53,15 +68,17 @@ namespace Matteprogrammering {
 			/* Development version
 			Matrix matrix = new Matrix();
 
-			matrix.Scale(1f / (Max.X - Min.X),
-						 1f / (Max.Y - Min.Y));
+			//Inversely scale with width and height
+			matrix.Scale(1f / Width,
+						 1f / Height);
 			
+			//Translate the origin to the lower-left corner
 			matrix.Translate(-Min.X, -Min.Y);
 			*/
 
 			///* Optimized version:
-			float scaleX = 1f / (Max.X - Min.X),
-				  scaleY = 1f / (Max.Y - Min.Y);
+			float scaleX = 1f / Width,
+				  scaleY = 1f / Height;
 
 			Matrix matrix = new Matrix(
 				scaleX, 0,
@@ -86,6 +103,31 @@ namespace Matteprogrammering {
 
 			///* Optimized version:
 			Matrix matrix = new Matrix(1, 0, 0, 1, x, y); 
+			//*/
+			return Transform(matrix);
+		}
+		public Window Center() {
+			/* Development version
+			Matrix matrix = new Matrix();
+			//Move origin to lower-left corner
+			matrix.Translate(
+				-Min.X, // 0 - Min.X
+				-Min.Y  // 0 - Min.Y
+			);
+			//Move origin to center
+			matrix.Translate(
+				-Width / 2,
+				-Height / 2
+			);
+			*/
+
+			///* Optimized version:
+			Matrix matrix = new Matrix(
+				1, 0,
+				0, 1,
+				-Min.X - (Max.X - Min.X) / 2,
+				-Min.Y - (Max.Y - Min.Y) / 2
+			);
 			//*/
 			return Transform(matrix);
 		}

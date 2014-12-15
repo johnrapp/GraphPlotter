@@ -9,9 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Matteprogrammering.Extentions;
+using System.Diagnostics;
 
 namespace Matteprogrammering {
-	public partial class BaseGraph : UserControl {
+	public abstract partial class BaseGraph : UserControl {
+		//Base graph class
+		//Keep track of the current function and window
+		//aswell as contains functions to draw different things, such as plot functions
+		//Since it does not drawing by itself it makes no sense to intantiate and is therefor declared abstract
+
 		private Window window;
 		private Function function;
 		protected Matrix WindowMatrix = new Matrix(),
@@ -31,6 +37,7 @@ namespace Matteprogrammering {
 		public virtual Window Window {
 			get { return window; }
 			set {
+				//Validate window, calcate new matrices and render
 				if(value.Validate()) {
 					window = value;
 					WindowMatrix = value.GetMatrix();
@@ -45,6 +52,7 @@ namespace Matteprogrammering {
 		public Function Function {
 			get { return function; }
 			set {
+				//Set function and render
 				function = value;
 				Render();
 			}
@@ -70,40 +78,52 @@ namespace Matteprogrammering {
             };
 			Matrix.TransformPoints(axes);
 
-			g.DrawLine(Pens.Blue, axes[0], axes[1]);
-			g.DrawLine(Pens.Blue, axes[2], axes[3]);
+			LineRenderer.Render(g, Pens.Blue, axes[0], axes[1]);
+			LineRenderer.Render(g, Pens.Blue, axes[2], axes[3]);
 		}
 		protected void Plot(Function function, Graphics g, Pen pen) {
-			PointF[] points = new PointF[100];
-			double minX = Math.Round((double) Window.Min.X),
-				   maxX = Math.Round((double) Window.Max.X);
-			double step = (maxX - minX) / 100.0;
+			//Draw one point per pixel
+			PointF[] points = new PointF[Width];
+			//How much one pixel represents in window space
+			double step = Window.Width / Width;
+			//Let the tolerance be 10% of the step
+			double tolerance = step * 0.1;
 
-			int i = -1;
-			for(double x = minX; x < maxX - step; x += step) {
+			double minX = Window.Min.X;
+			double maxX = Window.Max.X - tolerance;
+
+			//Variable used to push items to array
+			int push = -1;
+			//Start at minX and iterate until maxX
+			//maxX is subtracted with tolerance in order to deal with rounding errors when x is very close to maxX
+			for(double x = minX; x < maxX; x += step) {
+				//Calculate value and push to array
 				double y = function.Value(x);
-				points[++i] = new PointF((float) x, (float) y);
+				points[++push] = new PointF((float) x, (float) y);
 			}
+			//Transform with matrix
 			Matrix.TransformPoints(points);
 
-			g.DrawLines(pen, points);
+			LineRenderer.Render(g, pen, points);
 		}
+		private const float TRACE_SIZE = 6;
 		protected void Trace(double x, Graphics g, Pen pen) {
 			double y = function.Value(x);
 
 			PointF origin = Matrix.TransformPoint(new PointF((float) x, (float) y));
 
-			float width = 6, height = 6;
 			PointF[] cross = new PointF[] {
-				new PointF(origin.X - width, origin.Y - height),
-				new PointF(origin.X + width, origin.Y + height),
+				//From the upper left to the lower right
+				new PointF(origin.X - TRACE_SIZE, origin.Y - TRACE_SIZE),
+				new PointF(origin.X + TRACE_SIZE, origin.Y + TRACE_SIZE),
 
-				new PointF(origin.X + width, origin.Y - height),
-				new PointF(origin.X - width, origin.Y + height)
+				//From the upper right to the lower left
+				new PointF(origin.X + TRACE_SIZE, origin.Y - TRACE_SIZE),
+				new PointF(origin.X - TRACE_SIZE, origin.Y + TRACE_SIZE)
 			};
 
-			g.DrawLine(pen, cross[0], cross[1]);
-			g.DrawLine(pen, cross[2], cross[3]);
+			LineRenderer.Render(g, pen, cross[0], cross[1]);
+			LineRenderer.Render(g, pen, cross[2], cross[3]);
 		}
 
 		protected override void OnResize(EventArgs e) {
@@ -113,6 +133,7 @@ namespace Matteprogrammering {
 		private void CalculateScreenMatrix() {
 			/* Development version
 			ScreenMatrix = new Matrix();
+			//Invert y-axis and add height
 			ScreenMatrix.Translate(0, Height);
 			ScreenMatrix.Scale(Width, -Height);
 			*/
@@ -126,16 +147,9 @@ namespace Matteprogrammering {
 			//*/
 		}
 		private void CreateMatrix() {
-			/* Development version
-			Matrix.Reset();
-			Matrix.Multiply(WindowMatrix, MatrixOrder.Append);
-			Matrix.Multiply(ScreenMatrix, MatrixOrder.Append);
-			*/
-
-			///* Optimized version
+			//Multiply window-matrix with screen-matrix
 			Matrix = WindowMatrix.Clone();
 			Matrix.Multiply(ScreenMatrix, MatrixOrder.Append);
-			//*/
 
 			Inverse = Matrix.Clone();
 			Inverse.Invert();

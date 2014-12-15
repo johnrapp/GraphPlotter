@@ -9,17 +9,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Matteprogrammering.UI {
-	public partial class WindowPicker : UserControl {
+	public partial class WindowController : UserControl {
 		private TextBox[] Inputs;
 		public EventHandler OnWindowChanged;
 		private Window window;
-		public WindowPicker() {
+		public WindowController() {
 			InitializeComponent();
 			Inputs = new TextBox[] { MinX, MaxX, MinY, MaxY };
 		}
 		public Window Window {
 			get { return window; }
 			set {
+				//Prevent windows forms bug
+				if(value == null) return;
+				
 				window = value;
 				if(OnWindowChanged != null) {
 					OnWindowChanged(this, null);
@@ -54,6 +57,10 @@ namespace Matteprogrammering.UI {
 
 		private void OnReset(object sender, EventArgs e) {
 			Window = Window.DEFAULT;
+		}
+
+		private void OnCenter(object sender, EventArgs e) {
+			Window = Window.Center();
 		}
 	}
 }

@@ -10,6 +10,7 @@ namespace Matteprogrammering.Extentions
 {
 	public static class MatrixExtensions
 	{
+		//Some methods i found that the Matrix class lacked
 		public static PointF TransformVector(this Matrix matrix, PointF vector)
 		{
 			PointF[] transform = new PointF[] { vector };

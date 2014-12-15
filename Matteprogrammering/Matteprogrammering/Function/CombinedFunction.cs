@@ -19,11 +19,6 @@ namespace Matteprogrammering {
 			this.terms = terms;
 		}
 
-		public override double[] Constants {
-			get {
-				return terms.SelectMany(term => term.Constants).ToArray();
-			}
-		}
 
 		public override double Value(double x) {
 			//Calculate combined value of functions

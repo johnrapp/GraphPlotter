@@ -15,12 +15,6 @@ namespace Matteprogrammering {
 			this.b = b;
 		}
 
-		public override double[] Constants {
-			get {
-				return new Double[] {a, b};
-			}
-		}
-
 		public override double Value(double x) {
 			//y = a*b^x
 			return a * Math.Pow(b, x);
@@ -32,7 +26,16 @@ namespace Matteprogrammering {
 		}
 
 		public override string ToString() {
-			return String.Format("{0}*{1}^x", a, b);
+			//If a == 0, the whole expression will become 0
+			if(a == 0) return "0";
+
+			//Add a unless a == 1: turn 1*2^x into 2^x
+			//Round a, since a tends to contain a lot of decimals after derivation
+			string output = a == 1 ? "" : Math.Round(a, 5) + "*";
+			//Add b and the exponent x
+			output += b + "^x";
+
+			return output;
 		}
 	}
 }

@@ -10,55 +10,68 @@ using System.Windows.Forms;
 
 namespace Matteprogrammering.UI {
 	public partial class FunctionPicker : UserControl {
-		private TextBox[] Inputs;
 		public EventHandler OnFunctionChanged;
 		private Function function;
+		private Function[] Functions = new Function[] {
+			new Polynomial(5, -1),
+			new Exponential(1, 1.2),
+			new CombinedFunction(
+				new Polynomial(10, 0, 2, 1),
+				new Exponential(1, 2)
+			),
+			new Polynomial(0, -2, 0, 1, -1, 2, 0.5, -0.5)
+		};
+		//private ComboBoxItem OtherItem = new ComboBoxItem(new Polynomial(0), "Other");
+		private ComboBoxItem OtherItem = new ComboBoxItem(null, "Other");
 		public FunctionPicker() {
 			InitializeComponent();
 
-			Inputs = new TextBox[] { ConstantTerm, LinearTerm, QuadraticTerm, CubicTerm };
+			foreach(Function function in Functions) {
+				ComboBoxItem item = new ComboBoxItem(function, function.ToString());
+				FunctionSelect.Items.Add(item);
+			}
 		}
+
+		private void OnLoad(object sender, EventArgs e) {
+			FunctionSelect.SelectedIndex = 0;
+		}
+
 		public Function Function {
 			get { return function; }
 			set {
+				//Prevent windows forms bug
+				if(value == null) return;
+
 				function = value;
+				FunctionLabel.Text = function.ToString();
+
 				if(OnFunctionChanged != null) {
 					OnFunctionChanged(this, null);
 				}
-				Render();
 			}
 		}
-		bool hack = false;
-		private void Render() {
-			hack = true;
-
-			double[] constants = Function.Constants;
-			int i = 0;
-			for(; i < constants.Length; i++) {
-				Inputs[i].Text = Math.Round(constants[i], 1).ToString();
-			}
-			for(; i < Inputs.Length; i++) {
-				Inputs[i].Text = "0";
-			}
-
-			hack = false;
-		}
-
 		private void OnDerive(object sender, EventArgs e) {
-			Function = Function.Derive();
-		}
+			Function derivate = Function.Derive();
+			OtherItem.Value = derivate;
 
-		private void OnTextChange(object sender, EventArgs e) {
-			if(hack) return;
-
-			double[] constants = new double[Inputs.Length];
-
-			for(int i = 0; i < constants.Length; i++) {
-				if(!double.TryParse(Inputs[i].Text, out constants[i]))
-					constants[i] = 0;
+			if(!FunctionSelect.Items.Contains(OtherItem)) {
+				FunctionSelect.Items.Add(OtherItem);
+				FunctionSelect.SelectedItem = OtherItem;
 			}
 
-			Function = new Polynomial(constants);
+			Function = derivate;
 		}
+
+		private void OnSelectFunction(object sender, EventArgs e) {
+			ComboBoxItem item = (ComboBoxItem) FunctionSelect.SelectedItem;
+			Function function = (Function) item.Value;
+
+			if(item != OtherItem) {
+				FunctionSelect.Items.Remove(OtherItem);
+			}
+			
+			Function = function;	
+		}
+
 	}
 }

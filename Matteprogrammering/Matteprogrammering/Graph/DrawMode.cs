@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Matteprogrammering {
+	//Class containing constant bitmask flags used in Graph
 	public class DrawMode {
 		public const int Function = 1;	  //0001
 		public const int Tangent = 1 << 1;//0010

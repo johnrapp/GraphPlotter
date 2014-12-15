@@ -10,6 +10,10 @@ using System.Windows.Forms;
 
 namespace Matteprogrammering {
 	public partial class Graph : BaseGraph {
+		//Graph class that renders the graph
+		//A bitmask is used to set flags regarding what to render
+
+		//Just render the function by default
 		private int DrawMask = DrawMode.Function;
 		private int RedrawMask = DrawMode.Tangent | DrawMode.Trace;
 		protected double userX = 0;
@@ -18,10 +22,12 @@ namespace Matteprogrammering {
 			InitializeComponent();
 		}
 
+		//What x-value the user is interested in
 		protected double UserX {
 			get { return userX; }
 			set {
 				userX = value;
+				//Only re-render in certain modes
 				if((DrawMask & RedrawMask) > 0) {
 					Render();
 				}
@@ -43,6 +49,7 @@ namespace Matteprogrammering {
 			}
 		}
 
+		//Functions that can get and set different modes from the bitmask
 		public void Toggle(int mode, bool enable) {
 			if(enable) Enable(mode);
 			else Disable(mode);

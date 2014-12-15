@@ -10,76 +10,53 @@ using System.Windows.Forms;
 
 namespace Matteprogrammering {
 	public partial class GraphViewer : Form {
-		private Window Window {
-			get { return Graph.Window; }
-			set {
-				try {
-					Graph.Window = value;
-
-					WindowPicker.Window = value;
-				} catch(InvalidOperationException ex) { }
-			}
-
-		}
-		private Function Function {
-			get { return Graph.Function; }
-			set {
-				try {
-					Graph.Function = value;
-
-					FunctionPicker.Function = value;
-
-					CurrentFunction.Text = value.ToString();
-				} catch(InvalidOperationException ex) { }
-			}
-		}
 		public GraphViewer() {
 			InitializeComponent();
 
-			Window = Window.DEFAULT;
+			//Initialize with default window
+			Graph.Window = WindowController.Window = Window.DEFAULT;
 
-			//Function = new Polynomial(0, -2, 0, 1);
-			//Function = new Exponential(8, 0.8);
-			Function = new CombinedFunction(
-				new Polynomial(-8, 3),
-				new Exponential(8, 0.8)
-			);
-
+			//Attach event listeners
 			Graph.OnWindowChanged += new EventHandler(OnRenderNewWindow);
-			WindowPicker.OnWindowChanged = new EventHandler(OnWindowChanged);
+			WindowController.OnWindowChanged = new EventHandler(OnWindowChanged);
 
 			FunctionPicker.OnFunctionChanged = new EventHandler(OnFunctionChanged);
 		}
 
-		bool hack = false;
+		//Flag wheter or not to ignore event
+		bool prevent = false;
 		private void OnWindowChanged(object sender, EventArgs e) {
-			if(hack) return;
+			if(prevent) return;
 
-			hack = true;
-			Graph.Window = WindowPicker.Window;
-			hack = false;
+			prevent = true;
+			//Keep the Graph window in sync with the WindowController window
+			Graph.Window = WindowController.Window;
+			prevent = false;
 		}
 
 		private void OnRenderNewWindow(object sender, EventArgs e) {
-			if(hack) return;
+			if(prevent) return;
 
-			hack = true;
-			WindowPicker.Window = Graph.Window;
-			hack = false;
+			prevent = true;
+			//Keep the Graph window in sync with the WindowController window
+			WindowController.Window = Graph.Window;
+			prevent = false;
 		}
 
 		private void OnFunctionChanged(object sender, EventArgs e) {
+			//Keep the Graph function in sync with the FunctionPicker function
 			Graph.Function = FunctionPicker.Function;
-			CurrentFunction.Text = FunctionPicker.Function.ToString();
 		}
 
 		private void OnToggleDrawMode(object sender, EventArgs e) {
+			//Toggle draw flags in Graph
 			CheckBox box = (CheckBox) sender;
 			Graph.Toggle((int) box.Tag, box.Checked);
 		}
 
 
 		private void OnSetDisplayMode(object sender, EventArgs e) {
+			//Set display mode of graph
 			RadioButton button = (RadioButton) sender;
 			Graph.DisplayMode = (DisplayMode) button.Tag;
 		}

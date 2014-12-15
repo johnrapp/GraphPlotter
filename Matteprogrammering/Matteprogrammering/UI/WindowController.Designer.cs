@@ -1,5 +1,5 @@
 ﻿namespace Matteprogrammering.UI {
-	partial class WindowPicker {
+	partial class WindowController {
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
@@ -34,13 +34,14 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.MinX = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.button4 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(9, 153);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 23);
+			this.button3.Size = new System.Drawing.Size(66, 23);
 			this.button3.TabIndex = 23;
 			this.button3.Text = "Reset";
 			this.button3.UseVisualStyleBackColor = true;
@@ -136,10 +137,21 @@
 			this.label1.TabIndex = 13;
 			this.label1.Text = "Min X";
 			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(84, 152);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(65, 23);
+			this.button4.TabIndex = 24;
+			this.button4.Text = "Center";
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.OnCenter);
+			// 
 			// WindowPicker
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
@@ -171,6 +183,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox MinX;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button button4;
 
 	}
 }

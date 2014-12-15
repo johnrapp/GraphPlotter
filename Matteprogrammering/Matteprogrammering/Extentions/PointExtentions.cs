@@ -9,6 +9,7 @@ namespace Matteprogrammering.Extentions
 {
 	public static class PointExtentions
 	{
+		//Some methods i found that the PointF class lacked
 		public static PointF Add(this PointF a, PointF b)
 		{
 			return new PointF(a.X + b.X, a.Y + b.Y);

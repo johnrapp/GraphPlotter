@@ -9,10 +9,7 @@ namespace Matteprogrammering
 	//Abstract base class for all functions
 	public abstract class Function
 	{
-		//Abstract properties and methods, that must be implemented
-		public abstract double[] Constants {
-			get;
-		}
+		//Abstract methods, that must be implemented
 		public abstract double Value(double x);
 		public abstract Function Derive();
 
@@ -52,7 +49,7 @@ namespace Matteprogrammering
 			//dx = f(x + h) - f(x - h)
 			//dy = 2h
 
-			//Lower value will produce better approximation, but might also introduce rounding-errors
+			//Lower value will produce better approximation, but might cause rounding-errors
 			double h = 0.001;
 
 			double dy = Value(x + h) - Value(x - h),
